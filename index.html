@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #101826;
+    --ink-soft: #4b5568;
+    --ink-faint: #8891a1;
+    --line: #e4e7ec;
+    --page: #f6f7f9;
+    --card: #ffffff;
+    --brand: #0f766e;
+    --brand-dark: #085046;
+
+    --reel-bg: #f0ecff; --reel-text: #4d3aa3; --reel-dot: #7c5cfc;
+    --story-bg: #fdeaf3; --story-text: #99355a; --story-dot: #e85d9e;
+    --post-bg: #e6f6f3; --post-text: #0f6e56; --post-dot: #1d9e75;
+    --carousel-bg: #e9f1fd; --carousel-text: #0c447c; --carousel-dot: #378add;
+    --video-bg: #fdf1de; --video-text: #854f0b; --video-dot: #ef9f27;
+    --competition-bg: #fdece8; --competition-text: #a32d2d; --competition-dot: #e4572e;
+    --offline-bg: #eef4e2; --offline-text: #3b6d11; --offline-dot: #639922;
+    --growth-bg: #eceffd; --growth-text: #2d3a99; --growth-dot: #4c5fd6;
+    --bd-bg: #f7f0e6; --bd-text: #7a5230; --bd-dot: #b98a52;
+
+    --sl-ridehailing: #2f6fed;
+    --sl-box: #d97706;
+    --sl-liveride: #0f9d58;
+    --sl-vip: #8b5cf6;
+
+    --cat-online: #1d9e75;
+    --cat-offline: #639922;
+    --cat-growth: #4c5fd6;
+    --cat-bd: #b98a52;
+    --cat-mixed: #0f6a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    padding: 32px 24px 64px;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .brand-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--brand-dark);
+    background: #e6f6f3;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .stats {
+    display: flex;
+    gap: 28px;
+  }
+
+  .stat { text-align: right; }
+  .stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--brand-dark);
+    display: block;
+  }
+  .stat .lbl {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .view-switch {
+    display: inline-flex;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+
+  .view-switch button {
+    border: none;
+    background: transparent;
+    padding: 7px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .view-switch button.active {
+    background: var(--page);
+    color: var(--ink);
+  }
+
+  .month-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+
+  .month-nav button {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .month-nav button:hover { background: #eef0f2; }
+
+  #monthLabel {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 190px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+
+  .controls label {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  select {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    color: var(--ink);
+  }
+
+  .legend-block { margin-top: 6px; width: 100%; }
+
+  .legend-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 10px 0 6px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .sq { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+
+  .grid {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .weekdays, .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .weekdays div {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .day {
+    min-height: 138px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .days .day:nth-child(7n) { border-right: none; }
+
+  .day.empty { background: #fbfbfc; }
+
+  .day-campaigns { display: flex; flex-direction: column; gap: 2px; margin-bottom: 2px; }
+  .day-campaign-seg { height: 5px; border-radius: 3px; cursor: pointer; }
+  .day-campaign-seg.hidden { display: none; }
+  .day-campaign-more {
+    font-size: 9.5px;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 1px 5px;
+    border-radius: 5px;
+    background: var(--page);
+    align-self: flex-start;
+    font-family: 'Inter', sans-serif;
+  }
+  .day-campaign-more.hidden { display: none; }
+
+  .day-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .chip {
+    font-size: 11.5px;
+    padding: 5px 7px;
+    border-radius: 8px;
+    cursor: pointer;
+    line-height: 1.35;
+    border: none;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+  }
+
+  .chip .title { font-weight: 600; display: block; padding-right: 10px; }
+  .chip .meta { display: block; opacity: 0.85; margin-top: 1px; font-size: 11px; }
+  .chip .sl-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; }
+
+  .chip.type-reel { background: var(--reel-bg); color: var(--reel-text); }
+  .chip.type-story { background: var(--story-bg); color: var(--story-text); }
+  .chip.type-post { background: var(--post-bg); color: var(--post-text); }
+  .chip.type-carousel { background: var(--carousel-bg); color: var(--carousel-text); }
+  .chip.type-video { background: var(--video-bg); color: var(--video-text); }
+  .chip.type-competition { background: var(--competition-bg); color: var(--competition-text); }
+  .chip.type-offline { background: var(--offline-bg); color: var(--offline-text); }
+  .chip.type-growth { background: var(--growth-bg); color: var(--growth-text); }
+  .chip.type-bd { background: var(--bd-bg); color: var(--bd-text); }
+
+  .chip.hidden { display: none; }
+
+  .status-past { filter: grayscale(0.55) opacity(0.55); }
+  .status-future { outline: 1.5px dashed rgba(16,24,38,0.4); outline-offset: -1.5px; }
+
+  .status-legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); }
+  .status-swatch { width: 20px; height: 10px; border-radius: 3px; background: var(--brand); flex-shrink: 0; }
+  .status-swatch.future { background: transparent; border: 1.5px dashed rgba(16,24,38,0.4); }
+  .status-swatch.past { background: var(--brand); filter: grayscale(0.55) opacity(0.55); }
+
+  .roadmap { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; overflow-x: auto; }
+  .roadmap.active { display: block; }
+  .grid.hidden-view, .weekdays.hidden-view { display: none; }
+
+  .rm-header { display: flex; margin-bottom: 8px; }
+  .rm-spacer { width: 150px; flex-shrink: 0; }
+  .rm-daynums { flex: 1; display: grid; }
+  .rm-daynums span { font-size: 10.5px; color: var(--ink-faint); text-align: center; }
+
+  .rm-lane { display: flex; align-items: flex-start; margin-bottom: 6px; }
+  .rm-label { width: 150px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; padding-right: 10px; padding-top: 4px; }
+  .rm-lane-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .rm-track { display: grid; gap: 3px; background: var(--page); border-radius: 8px; padding: 4px; min-height: 46px; }
+  .rm-slot { display: flex; flex-direction: column; gap: 2px; min-height: 38px; }
+
+  .rm-campaign-track { display: grid; gap: 3px; row-gap: 4px; }
+  .rm-campaign-track.empty { display: none; }
+
+  .rm-block {
+    font-size: 10px;
+    padding: 4px 5px;
+    border-radius: 5px;
+    border-left: 3px solid;
+    cursor: pointer;
+    color: white;
+    line-height: 1.25;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+  }
+
+  .rm-block.hidden { display: none; }
+
+  .rm-campaign-bar {
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border-left: 4px solid;
+    cursor: pointer;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+  }
+
+  .rm-campaign-bar.hidden { display: none; }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(16,24,38,0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    max-width: 440px;
+    width: 100%;
+    padding: 24px;
+  }
+
+  .modal-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+    margin-right: 6px;
+  }
+
+  .modal h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    margin: 0 0 12px;
+  }
+
+  .modal-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .modal-row span:first-child { color: var(--ink-faint); }
+  .modal-row span:last-child { font-weight: 500; }
+
+  .modal p.details {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 14px 0 18px;
+  }
+
+  .modal button.close {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  .campaign-banner {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+
+  .campaign-banner.empty { display: none; }
+
+  .campaign-banner-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  .campaign-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .campaign-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 10px 6px 8px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    color: var(--ink);
+    background: var(--page);
+    border: 1px solid var(--line);
+  }
+
+  .campaign-pill .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .campaign-pill .sl-sq { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .campaign-pill .range { color: var(--ink-faint); font-weight: 400; }
+  .campaign-pill.hidden { display: none; }
+
+  footer.note {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  .planning { display: none; }
+  .planning.active { display: block; }
+
+  .planning-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .planning-card .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+
+  .info-note {
+    background: #fdf1de;
+    border: 1px solid #f3d9a8;
+    color: #854f0b;
+    font-size: 12.5px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+  }
+
+  .planning-badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #854f0b;
+    background: #fdf1de;
+    border: 1px solid #f3d9a8;
+    padding: 4px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+  }
+
+  .reactivated { display: none; }
+  .reactivated.active { display: block; }
+
+  .proto-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--brand-dark);
+    background: #e6f6f3;
+    border: 1px solid #cdeee7;
+    padding: 3px 9px;
+    border-radius: 100px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .ra-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 14px 0 18px;
+  }
+
+  .ra-form input, .ra-form select {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    color: var(--ink);
+  }
+
+  .ra-form input[type="text"] { flex: 1 1 180px; }
+  .ra-form input[type="date"] { flex: 0 1 150px; }
+
+  .ra-form button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--brand);
+    color: white;
+    cursor: pointer;
+  }
+  .ra-form button:hover { background: var(--brand-dark); }
+
+  .ra-form textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    color: var(--ink);
+    flex: 1 1 100%;
+    resize: vertical;
+    min-height: 38px;
+  }
+
+  .ra-sl-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ra-sl-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .ra-check {
+    font-size: 13px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .ra-check input { margin: 0; cursor: pointer; }
+
+  .ra-form input[type="email"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    color: var(--ink);
+    flex: 1 1 200px;
+  }
+
+  .ra-form .ra-brief {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--page);
+    color: var(--ink);
+    flex: 1 1 100%;
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.5;
+  }
+  .ra-form .ra-brief::placeholder { color: var(--ink-faint); }
+
+  .ra-assign-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ra-assign-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .ra-card .ra-brief-text {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    white-space: pre-line;
+    line-height: 1.45;
+  }
+
+
+  .ra-empty {
+    font-size: 13px;
+    color: var(--ink-faint);
+    padding: 18px 4px;
+    text-align: center;
+  }
+
+  .ra-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+
+  .ra-card .ra-main { display: flex; flex-direction: column; gap: 2px; }
+  .ra-card .ra-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; }
+  .ra-card .ra-sub { font-size: 12px; color: var(--ink-soft); }
+  .ra-card .ra-tags { display: flex; gap: 6px; flex-shrink: 0; }
+  .ra-card .ra-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--page);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand-tag">Petra Ride • Marketing</div>
+      <h1>Content calendar</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="num" id="statTotal">0</span><span class="lbl">This month</span></div>
+      <div class="stat"><span class="num" id="statUnassigned">0</span><span class="lbl">Unassigned</span></div>
+    </div>
+  </header>
+
+  <div class="view-switch">
+    <button id="btnCalendarView" class="active">Calendar</button>
+    <button id="btnRoadmapView">Roadmap</button>
+    <button id="btnPlanningView">Planning</button>
+    <button id="btnReactivatedView">Reactive Campaigns</button>
+  </div>
+
+  <div class="month-nav">
+    <button id="prevMonth" aria-label="Previous month">‹</button>
+    <span id="monthLabel"></span>
+    <button id="nextMonth" aria-label="Next month">›</button>
+  </div>
+
+  <div class="controls">
+    <label for="personFilter">Person</label>
+    <select id="personFilter"></select>
+    <label for="typeFilter">Format</label>
+    <select id="typeFilter"></select>
+    <label for="serviceFilter">Service line</label>
+    <select id="serviceFilter"></select>
+
+    <div class="legend-block">
+      <div class="legend-title">Format</div>
+      <div class="legend" id="legend"></div>
+      <div class="legend-title">Service line</div>
+      <div class="legend" id="slLegend"></div>
+      <div class="legend-title">Timing</div>
+      <div class="legend">
+        <div class="status-legend"><span class="status-swatch"></span>Active</div>
+        <div class="status-legend"><span class="status-swatch future"></span>Upcoming</div>
+        <div class="status-legend"><span class="status-swatch past"></span>Completed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="campaign-banner" id="campaignBanner">
+    <div class="campaign-banner-title">Active campaigns this month</div>
+    <div class="campaign-pills" id="campaignPills"></div>
+  </div>
+
+  <div class="grid" id="calendarGrid">
+    <div class="weekdays">
+      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+    <div class="days" id="days"></div>
+  </div>
+
+  <div class="roadmap" id="roadmapView">
+    <div class="rm-header">
+      <div class="rm-spacer"></div>
+      <div class="rm-daynums" id="rmDaynums"></div>
+    </div>
+    <div id="rmLanes"></div>
+  </div>
+
+  </div>
+
+  <div class="planning" id="planningView">
+    <div class="info-note">These are on the horizon but don't have a confirmed plan yet — no dates, budget, or ownership. Once one is ready to schedule, it moves into Active Campaigns.</div>
+    <div id="planningList"></div>
+  </div>
+
+  <div class="reactivated" id="reactivatedView">
+    <div class="info-note">Anyone on the team can submit a reactive campaign request below. Entries are saved to a shared Google Sheet and email notifications are sent automatically. Only the admin can remove entries from the Google Sheet.</div>
+    <form class="ra-form" id="raForm">
+      <input type="text" id="raTitle" placeholder="Campaign / activity name" required>
+      <input type="date" id="raDate" required>
+      <input type="text" id="raRequester" placeholder="Requester name" required>
+      <input type="email" id="raRequesterEmail" placeholder="Requester email" required>
+      <div class="ra-assign-group">
+        <label for="raAssignTo">Assign to</label>
+        <select id="raAssignTo">
+          <option value="Muez">Muez</option>
+          <option value="Nour">Nour</option>
+        </select>
+      </div>
+      <select id="raCategory">
+        <option value="Growth">Growth</option>
+        <option value="BD">BD</option>
+      </select>
+      <div class="ra-sl-group" id="raServiceGroup">
+        <span class="ra-sl-label">Service line</span>
+        <label class="ra-check"><input type="checkbox" value="Ride Hailing"> Ride Hailing</label>
+        <label class="ra-check"><input type="checkbox" value="Box"> Box</label>
+        <label class="ra-check"><input type="checkbox" value="Live Ride"> Live Ride</label>
+        <label class="ra-check"><input type="checkbox" value="VIP"> VIP</label>
+      </div>
+      <textarea class="ra-brief" id="raBrief" placeholder="1. Discount % (if applicable)&#10;2. Expected duration / date&#10;3. Channel: SMS, Push notifications, Social media, or SEM&#10;4. Type of post" rows="5"></textarea>
+      <button type="submit">+ Submit request</button>
+    </form>
+    <div id="reactivatedList"></div>
+  </div>
+
+  <footer class="note">Format = content type (Reel, Story, Offline event, etc). Service line = product (Ride Hailing, Box, Live Ride, VIP). Roadmap groups activities by service line across the month.</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+const events = [
+  {date:"2026-08-26", title:"Back to School kickoff post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Kickoff post for the Back to School campaign: easier school drop-offs with Live Ride, 30% off with code SCHOOL. Status: Approved."},
+  {date:"2026-08-27", title:"Back to School story", person:"Jessica", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"Back to School campaign story. Status: Approved."},
+  {date:"2026-08-29", title:"SCHOOL1 winter camp giveaway", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Promo post: more rides with code SCHOOL1 enters a draw to win a winter camp for your child. Terms and conditions apply. Status: Approved."},
+  {date:"2026-08-30", title:"Back to School story", person:"Jessica", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"Back to School campaign story. Status: Approved."},
+  {date:"2026-08-31", title:"Back to School recap carousel", person:"Jessica", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Live Ride", details:"Carousel recapping what you can win this Back to School season: 30% off + draw for 30 free trips with code SCHOOL, or a winter camp with code SCHOOL1. Status: Approved."},
+  {date:"2026-09-01", title:"Back to School reel — Spiderman", person:"Jessica", designer:"Bayan", type:"reel", channel:"Online", serviceLevel:"Live Ride", details:"Reel introducing Live Ride's \"heroes\" with a Spiderman cameo, framing riders as family. Status: Approved on WhatsApp."},
+  {date:"2026-09-01", title:"SUN campaign story", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"Story supporting the SUN campaign."},
+  {date:"2026-09-02", title:"50 JD voucher promo", person:"Rana", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Promo post: 50 JD voucher for two with code SUN, encouraging summer outings. SUN campaign. Status: Approved."},
+  {date:"2026-09-03", title:"Live Ride service post", person:"Unassigned", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Post plus story introducing the Live Ride service, focused on parents tracking their kids' trips live. Status: Approved."},
+  {date:"2026-09-04", title:"3 stories — Mecca Mall", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"Three of the four Mecca Mall stories. SUN campaign. Status: Approved."},
+  {date:"2026-09-04", title:"1 story — Mecca Mall", person:"Jessica", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"One of the four Mecca Mall stories, tied to the Back to School / Live Ride campaign. Status: Approved."},
+  {date:"2026-09-05", title:"Petra Ride app promo", person:"Unassigned", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Post promoting the all-in-one Petra Ride app for any destination. Status: Approved."},
+  {date:"2026-09-05", title:"4 stories — Mecca Mall", person:"Rana", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"Set of four stories filmed at Mecca Mall. Status: Approved."},
+  {date:"2026-09-06", title:"Escape The Room promo", person:"Rana", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Promo post for a full Escape The Room experience with friends, using code SUN. SUN campaign. Status: Approved."},
+  {date:"2026-09-07", title:"Back to School + code promo", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Back to School content plus a post and story: use code SCHOOL for a chance to win 30 free Live Ride trips (3+ trips/week required). Status: Approved."},
+  {date:"2026-09-07", title:"SUN campaign story", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"Story supporting the SUN campaign."},
+  {date:"2026-09-08", title:"10% cashback promo", person:"Unassigned", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Post: 10% cashback using code C10 when paying with Apple Pay. Status: Approved."},
+  {date:"2026-09-09", title:"Cinema Reel", person:"Rana", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Cinema-themed reel encouraging repeated use of code SUN, with a friend tag. SUN campaign. Status: Approved."},
+  {date:"2026-09-09", title:"Back to School reel", person:"Jessica", designer:"Bayan", type:"reel", channel:"Online", serviceLevel:"Live Ride", details:"Back to School campaign reel."},
+  {date:"2026-09-10", title:"Back to School reel — 30% discount", person:"Jessica", designer:"Bayan", type:"reel", channel:"Online", serviceLevel:"Live Ride", details:"Back to School content: Live Ride simplifies the routine, 30% off with code SCHOOL. Status: Approved."},
+  {date:"2026-09-11", title:"Live Ride 35% promo", person:"Unassigned", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Two-day promo (Fri–Sat) for 35% off kids' trips on Live Ride with code LIVE, featuring live camera tracking. Status: Approved."},
+  {date:"2026-09-11", title:"Back to School advance booking carousel", person:"Jessica", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Live Ride", details:"Carousel encouraging parents to book their child's ride in advance with Live Ride, 30% off with code SCHOOL. Status: Approved via email."},
+  {date:"2026-09-17", title:"School pickup delay UGC post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Engagement post asking parents how often their kids are late for school pickup; responses enter a draw to win two free Live Ride trips. Approval status not explicitly marked in the source deck."},
+  {date:"2026-09-12", title:"Live reel — Saturday", person:"Unassigned", type:"reel", channel:"Online", serviceLevel:"Live Ride", details:"Reel continuing the Live Ride 35% promo with code LIVE. Status: Approved."},
+  {date:"2026-09-13", title:"SUN Engagement Reel", person:"Rana", designer:"Bayan", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Engagement reel tagged \"SUN\". SUN campaign. Note: the source deck describes this slide as an \"interactive competition\" (مسابقة تفاعلية) rather than a reel — flagging in case the format should stay as Competition. Reassigned from Bayan to Rana per SUN campaign ownership (Bayan remains the designer)."},
+  {date:"2026-09-14", title:"Animated video with VO", person:"Jessica", designer:"Bayan", type:"video", channel:"Online", serviceLevel:"Live Ride", details:"Animated video with voiceover: 30% off with code SCHOOL, entry into a draw for 30 free Live Ride trips."},
+  {date:"2026-09-15", title:"Carousel — rooms", person:"Jessica", designer:"Mays", type:"carousel", channel:"Online", serviceLevel:"Box", details:"Carousel post showcasing rooms. Box campaigns are owned by Jessica on the online team; designed by Mays."},
+  {date:"2026-09-16", title:"Padel Reel", person:"Rana", designer:"Mays", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Reel themed around padel. SUN campaign. Designed by Mays."},
+  {date:"2026-09-20", title:"Post announcing SUN winners", person:"Rana", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Post announcing the SUN campaign winners, phase 3. See also: Sun announcing winners reel on same date."},
+  {date:"2026-09-15", title:"Tabarbour Reel", person:"Jessica", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Reel content from Tabarbour area."},
+  {date:"2026-09-15", title:"Flash promo story", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"Flash Promo story content for social media."},
+  {date:"2026-09-17", title:"Disco Masr Event reel", person:"Rana", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Reel coverage of the Disco Masr event."},
+  {date:"2026-09-17", title:"Box post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Box", details:"Box service post. Designed by Bayan."},
+  {date:"2026-09-17", title:"Hackathon reel", person:"Rana", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Reel coverage of the Hackathon event."},
+  {date:"2026-09-18", title:"Sun Story", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign story content."},
+  {date:"2026-09-18", title:"School1 Promo story (BTS)", person:"Jessica", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"Back-to-school promotional story for School1."},
+  {date:"2026-09-19", title:"Sun story", person:"Rana", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign story content."},
+  {date:"2026-09-19", title:"Live Ride Post", person:"Jessica", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride service post."},
+  {date:"2026-09-20", title:"Sun carousel post", person:"Rana", type:"carousel", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign carousel post."},
+  {date:"2026-09-20", title:"Sun announcing winners reel", person:"Rana", designer:"Bayan", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Reel announcing the SUN campaign winners. Designed by Bayan."},
+  {date:"2026-09-21", title:"Sun Story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign story content. Designed by Bayan."},
+  {date:"2026-09-22", title:"Box Carousel Post", person:"Jessica", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Box", details:"Box service carousel post. Designed by Bayan."},
+  {date:"2026-09-23", title:"Sun Villa prize reel", person:"Rana", designer:"Mays", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign Villa prize reel. Designed by Mays."},
+  {date:"2026-09-24", title:"Live Ride Post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride service post. Designed by Bayan."},
+  {date:"2026-09-27", title:"Sun Villa prize reel", person:"Rana", designer:"Mays", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign Villa prize reel. Designed by Mays."},
+  {date:"2026-09-29", title:"SUN Villa prize Post", person:"Rana", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign Villa prize post. Designed by Bayan."},
+  {date:"2026-09-30", title:"Box reel", person:"Jessica", type:"reel", channel:"Online", serviceLevel:"Box", details:"Box service reel content."},
+  {date:"2026-09-21", title:"VIP Van Carousel post", person:"Rana", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"VIP", details:"VIP Van carousel post for LinkedIn & Meta. Designed by Bayan."},
+  {date:"2026-09-23", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
+  {date:"2026-09-25", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
+  {date:"2026-09-27", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
+  {date:"2026-09-29", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
+  {date:"2026-09-02", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
+  {date:"2026-09-02", title:"Daragmeh activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Daragmeh."},
+  {date:"2026-09-03", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
+  {date:"2026-09-03", title:"Daragmeh activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Daragmeh."},
+  {date:"2026-09-04", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
+  {date:"2026-09-05", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
+  {date:"2026-09-08", title:"Alsamyeh Dawliyeh activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Alsamyeh Dawliyeh."},
+  {date:"2026-09-08", title:"JIS activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at JIS."},
+  {date:"2026-09-09", title:"InterContinental Amman — Bridge activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at the InterContinental Amman, Bridge area."},
+  {date:"2026-09-10", title:"InterContinental Amman — Bridge activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at the InterContinental Amman, Bridge area."},
+  {date:"2026-09-11", title:"Disco Masr activation", person:"Raneem", designer:"Mays", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Disco Masr."},
+  {date:"2026-09-24", title:"Irbid City Center activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Irbid City Center."},
+  {date:"2026-09-25", title:"Irbid City Center activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Irbid City Center."},
+  {date:"2026-09-26", title:"Irbid City Center activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Irbid City Center."},
+  {date:"2026-09-19", title:"Omer Diab activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at the Omer Diab event. Time: 2pm–6pm."},
+  {date:"2026-09-19", title:"Optimiza activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Optimiza. Time: 2pm–6pm."},
+  {date:"2026-09-19", title:"Al-Mayar school activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Al-Mayar school."},
+  {date:"2026-09-19", title:"JPSA event", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at JPSA event. Runs Sep 19–21."},
+  {date:"2026-09-20", title:"JPSA event", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at JPSA event. Runs Sep 19–21."},
+  {date:"2026-09-21", title:"JPSA event", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at JPSA event. Runs Sep 19–21."},
+  {date:"2026-09-23", title:"FinTech Festival activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at the FinTech Festival. Time: 12pm–4pm."},
+  {date:"2026-09-24", title:"FinTech Festival activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at the FinTech Festival."},
+  {date:"2026-10-02", title:"Hackathon - MVP Day", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at a hackathon event — MVP Day."},
+  {date:"2026-10-10", title:"Hackathon — Congress Day", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at a hackathon event — Congress Day."},
+  {date:"2026-10-17", title:"Tedx - UJ", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at TEDx UJ. Service line assumed Ride Hailing — confirm if this should be tagged differently."},
+  {date:"2026-10-29", title:"Summer of Irbid", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation, Summer of Irbid. Service line assumed Ride Hailing — confirm if this should be tagged differently."},
+  {date:"2026-09-08", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-09", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-10", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-11", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-12", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-13", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-14", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-15", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-16", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-17", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-18", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-19", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-20", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-21", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-22", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-23", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-24", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-25", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-26", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-27", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-28", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-29", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-09-30", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-01", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-02", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-03", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-04", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-05", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-06", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-07", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+  {date:"2026-10-08", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."}
+];
+
+const campaigns = [
+  {title:"Sun Campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2026-08-13", end:"2026-09-30", details:"Umbrella summer campaign built around code SUN, owned by Rana. Covers the SUN campaign story (1 Sept), 50 JD voucher promo (2 Sept), 3 of the 4 Mecca Mall stories (4 Sept), Escape The Room promo (6 Sept), the SUN campaign story (7 Sept), Cinema Reel (9 Sept), SUN Engagement Reel (13 Sept), Padel reel (16 Sept), and the post announcing SUN winners (20 Sept). Service line assumed Ride Hailing — confirm if this should be tagged differently."},
+  {title:"Marka Billboards", category:"Offline", serviceLevel:"Ride Hailing", start:"2026-09-01", end:"2026-11-01", designer:"Mays", details:"Ongoing offline billboard placements under the Marka campaign."},
+  {title:"Marka Campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2026-09-01", end:"2026-11-01", designer:"Bayan", details:"Ongoing online push for the Marka campaign."},
+  {title:"Back to Uni", category:"Online", serviceLevel:"Ride Hailing", start:"2026-09-20", end:"2026-11-20", details:"Online campaign targeting university students. Service line assumed Ride Hailing — confirm if this should be tagged differently."},
+  {title:"Flash Promo", category:"Growth", serviceLevel:"Ride Hailing", start:"2026-09-08", end:"2026-10-08", schedule:"Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM)", designer:"Bayan", details:"Growth-focused flash promotion, running three windows a day. Includes a story series (specific dates not yet set — let me know when those are confirmed so I can add them as individual dated posts). Service line assumed Ride Hailing — confirm if this should be tagged differently."},
+  {title:"Apple Pay Campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2026-07-07", end:"2026-12-31", details:"Ongoing online campaign promoting Apple Pay payments."},
+  {title:"P15 campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2025-12-07", end:"2026-12-31", designer:"Mays", details:"Long-running online P15 campaign. Includes P15 campaign video, designed by Mays."},
+  {title:"Breast Cancer Awareness", category:"Online & Offline", serviceLevel:"Ride Hailing", start:"2026-10-01", end:"2026-10-31", details:"Awareness campaign running across both online and offline channels."},
+  {title:"School Promo", category:"Online", serviceLevel:"Live Ride", start:"2026-08-25", end:"2027-01-15", designer:"Bayan", details:"Back to School Campaign, part 1 — online promo tied to the Live Ride service."},
+  {title:"School1 Promo", category:"Online", serviceLevel:"Live Ride", start:"2026-08-26", end:"2027-01-15", designer:"Bayan", details:"Back to School Campaign, part 2 — online promo tied to the Live Ride service."}
+];
+
+const rosterExtra = ["Raneem", "Muez", "Nour", "Obada"];
+
+const planningItems = [
+  "Black Friday Campaign",
+  "End of Year Campaign",
+  "City Mall Activation",
+  "Back to UNI",
+  "Xmas Campaign",
+  "Breast Cancer Awareness"
+];
+
+const typeLabels = {
+  reel: "Reel",
+  story: "Story",
+  post: "Post",
+  carousel: "Carousel",
+  video: "Video",
+  competition: "Competition",
+  offline: "Offline event",
+  growth: "Growth campaign",
+  bd: "BD event"
+};
+
+const serviceLevels = {
+  "Ride Hailing": "sl-ridehailing",
+  "Box": "sl-box",
+  "Live Ride": "sl-liveride",
+  "VIP": "sl-vip"
+};
+
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function todayISO() {
+  const now = new Date();
+  return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+}
+const TODAY = todayISO();
+
+const statusLabels = { active: "Active", future: "Upcoming", past: "Completed" };
+
+function eventDateStatus(dateStr) {
+  if (dateStr < TODAY) return 'past';
+  if (dateStr > TODAY) return 'future';
+  return 'active';
+}
+
+const teamLeads = {
+  "Raneem": "Muez",
+  "Obada": "Muez",
+  "Jessica": "Nour",
+  "Rana": "Nour"
+};
+
+function getTeamLead(person) {
+  return teamLeads[person] || null;
+}
+
+function campaignStatus(c) {
+  if (TODAY < c.start) return 'future';
+  if (TODAY > c.end) return 'past';
+  return 'active';
+}
+
+let current = { year: 2026, month: 8 };
+let activeView = "calendar";
+
+const daysEl = document.getElementById('days');
+const personFilter = document.getElementById('personFilter');
+const typeFilter = document.getElementById('typeFilter');
+const serviceFilter = document.getElementById('serviceFilter');
+const overlay = document.getElementById('overlay');
+const modalContent = document.getElementById('modalContent');
+const legend = document.getElementById('legend');
+const slLegend = document.getElementById('slLegend');
+const monthLabel = document.getElementById('monthLabel');
+const calendarGrid = document.getElementById('calendarGrid');
+const roadmapView = document.getElementById('roadmapView');
+
+function getCategory(ev) {
+  if (ev.channel === 'Offline') return 'Offline';
+  if (ev.type === 'growth') return 'Growth';
+  if (ev.type === 'bd') return 'BD';
+  return 'Online';
+}
+
+function categoryFillStyle(cat) {
+  if (cat === 'Online & Offline') return 'background:linear-gradient(90deg, var(--cat-online) 50%, var(--cat-offline) 50%);';
+  return 'background:var(--cat-' + cat.toLowerCase() + ');';
+}
+
+function categoryBorderVar(cat) {
+  if (cat === 'Online & Offline') return 'var(--cat-mixed)';
+  return 'var(--cat-' + cat.toLowerCase() + ')';
+}
+
+function monthBounds(year, month) {
+  const startStr = year + '-' + String(month + 1).padStart(2, '0') + '-01';
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const endStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(lastDay).padStart(2, '0');
+  return { startStr, endStr, lastDay };
+}
+
+function campaignDurationDays(c) {
+  const start = new Date(c.start);
+  const end = new Date(c.end);
+  return Math.round((end - start) / 86400000);
+}
+
+function formatShortDate(s, refYear) {
+  const parts = s.split('-').map(Number);
+  const y = parts[0], m = parts[1], d = parts[2];
+  return monthNames[m - 1].slice(0, 3) + ' ' + d + (y !== refYear ? ', ' + y : '');
+}
+
+function formatFullDate(s) {
+  const parts = s.split('-').map(Number);
+  return monthNames[parts[1] - 1] + ' ' + parts[2] + ', ' + parts[0];
+}
+
+function buildLegend() {
+  legend.innerHTML = '';
+  Object.keys(typeLabels).forEach(t => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = '<span class="dot" style="background:var(--' + t + '-dot)"></span>' + typeLabels[t];
+    legend.appendChild(item);
+  });
+
+  slLegend.innerHTML = '';
+  Object.keys(serviceLevels).forEach(sl => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = '<span class="sq" style="background:var(--' + serviceLevels[sl] + ')"></span>' + sl;
+    slLegend.appendChild(item);
+  });
+}
+
+function buildFilters() {
+  const people = Array.from(new Set([...events.map(e => e.person), ...rosterExtra, "Unassigned"])).sort();
+  personFilter.innerHTML = '<option value="all">All people</option>' +
+    people.map(p => '<option value="' + p + '">' + p + '</option>').join('');
+
+  typeFilter.innerHTML = '<option value="all">All formats</option>' +
+    Object.keys(typeLabels).map(t => '<option value="' + t + '">' + typeLabels[t] + '</option>').join('');
+
+  serviceFilter.innerHTML = '<option value="all">All service lines</option>' +
+    Object.keys(serviceLevels).map(sl => '<option value="' + sl + '">' + sl + '</option>').join('');
+}
+
+function buildCampaignBanner(year, month) {
+  const { startStr, endStr } = monthBounds(year, month);
+  const active = campaigns.filter(c => c.start <= endStr && c.end >= startStr)
+    .sort((a, b) => campaignDurationDays(a) - campaignDurationDays(b));
+  const banner = document.getElementById('campaignBanner');
+  const pillsEl = document.getElementById('campaignPills');
+  pillsEl.innerHTML = '';
+
+  if (active.length === 0) {
+    banner.classList.add('empty');
+    return;
+  }
+  banner.classList.remove('empty');
+
+  active.forEach(c => {
+    const pill = document.createElement('button');
+    pill.className = 'campaign-pill status-' + campaignStatus(c);
+    pill.dataset.service = c.serviceLevel;
+    pill.innerHTML =
+      '<span class="cat-dot" style="' + categoryFillStyle(c.category) + '"></span>' +
+      '<span class="sl-sq" style="background:var(--' + serviceLevels[c.serviceLevel] + ')"></span>' +
+      c.title + ' <span class="range">' + formatShortDate(c.start, year) + ' – ' + formatShortDate(c.end, year) + '</span>';
+    pill.addEventListener('click', () => openCampaignModal(c));
+    pillsEl.appendChild(pill);
+  });
+}
+
+function buildCalendar() {
+  const year = current.year, month = current.month;
+  monthLabel.textContent = monthNames[month] + ' ' + year;
+
+  buildCampaignBanner(year, month);
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthPrefix = year + '-' + String(month + 1).padStart(2, '0') + '-';
+
+  daysEl.innerHTML = '';
+
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day empty';
+    daysEl.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement('div');
+    cell.className = 'day';
+    const dateStr = monthPrefix + String(d).padStart(2, '0');
+
+    const activeCampaignsForDay = campaigns.filter(c => c.start <= dateStr && c.end >= dateStr)
+      .sort((a, b) => campaignDurationDays(a) - campaignDurationDays(b));
+    if (activeCampaignsForDay.length) {
+      const campWrap = document.createElement('div');
+      campWrap.className = 'day-campaigns';
+      const visible = activeCampaignsForDay.slice(0, 3);
+      visible.forEach(c => {
+        const seg = document.createElement('div');
+        seg.className = 'day-campaign-seg status-' + eventDateStatus(dateStr);
+        seg.style.background = 'var(--' + serviceLevels[c.serviceLevel] + ')';
+        seg.dataset.service = c.serviceLevel;
+        seg.title = c.title + ' (' + c.category + ')' + (c.schedule ? ' — ' + c.schedule : '');
+        seg.addEventListener('click', (e) => { e.stopPropagation(); openCampaignModal(c); });
+        campWrap.appendChild(seg);
+      });
+      if (activeCampaignsForDay.length > 3) {
+        const more = document.createElement('div');
+        more.className = 'day-campaign-more';
+        more.dataset.service = 'all';
+        more.textContent = '+' + (activeCampaignsForDay.length - 3) + ' more';
+        more.addEventListener('click', (e) => { e.stopPropagation(); openDayCampaignsModal(dateStr, activeCampaignsForDay); });
+        campWrap.appendChild(more);
+      }
+      cell.appendChild(campWrap);
+    }
+
+    const num = document.createElement('div');
+    num.className = 'day-num';
+    num.textContent = d;
+    cell.appendChild(num);
+
+    events.filter(e => e.date === dateStr).forEach(ev => {
+      const chip = document.createElement('button');
+      chip.className = 'chip type-' + ev.type + ' status-' + eventDateStatus(ev.date);
+      chip.dataset.person = ev.person;
+      chip.dataset.type = ev.type;
+      chip.dataset.service = ev.serviceLevel;
+      chip.innerHTML = '<span class="title">' + ev.title + '</span><span class="meta">' + ev.person + ' · ' + typeLabels[ev.type] + '</span><span class="sl-dot" style="background:var(--' + serviceLevels[ev.serviceLevel] + ')"></span>';
+      chip.addEventListener('click', () => openModal(ev, d));
+      cell.appendChild(chip);
+    });
+
+    daysEl.appendChild(cell);
+  }
+
+  applyFilters();
+  updateStats();
+}
+
+function buildRoadmap() {
+  const year = current.year, month = current.month;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthPrefix = year + '-' + String(month + 1).padStart(2, '0') + '-';
+  const { startStr: monthStartStr, endStr: monthEndStr } = monthBounds(year, month);
+
+  const rmDaynums = document.getElementById('rmDaynums');
+  rmDaynums.style.gridTemplateColumns = 'repeat(' + daysInMonth + ', 1fr)';
+  rmDaynums.innerHTML = '';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const s = document.createElement('span');
+    s.textContent = d;
+    rmDaynums.appendChild(s);
+  }
+
+  const rmLanes = document.getElementById('rmLanes');
+  rmLanes.innerHTML = '';
+
+  Object.keys(serviceLevels).forEach(sl => {
+    const lane = document.createElement('div');
+    lane.className = 'rm-lane';
+
+    const label = document.createElement('div');
+    label.className = 'rm-label';
+    label.innerHTML = '<span class="sq" style="background:var(--' + serviceLevels[sl] + ')"></span>' + sl;
+    lane.appendChild(label);
+
+    const body = document.createElement('div');
+    body.className = 'rm-lane-body';
+
+    const track = document.createElement('div');
+    track.className = 'rm-track';
+    track.style.gridTemplateColumns = 'repeat(' + daysInMonth + ', 1fr)';
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const slot = document.createElement('div');
+      slot.className = 'rm-slot';
+      const dateStr = monthPrefix + String(d).padStart(2, '0');
+
+      events.filter(e => e.date === dateStr && e.serviceLevel === sl).forEach(ev => {
+        const block = document.createElement('div');
+        const cat = getCategory(ev);
+        block.className = 'rm-block status-' + eventDateStatus(ev.date);
+        block.style.background = 'var(--' + serviceLevels[sl] + ')';
+        block.style.borderLeftColor = categoryBorderVar(cat);
+        block.dataset.person = ev.person;
+        block.dataset.type = ev.type;
+        block.dataset.service = ev.serviceLevel;
+        block.title = ev.title + ' — ' + cat;
+        block.textContent = ev.title;
+        block.addEventListener('click', () => openModal(ev, d));
+        slot.appendChild(block);
+      });
+
+      track.appendChild(slot);
+    }
+    body.appendChild(track);
+
+    const laneCampaigns = campaigns.filter(c => c.serviceLevel === sl && c.start <= monthEndStr && c.end >= monthStartStr);
+    const campaignTrack = document.createElement('div');
+    campaignTrack.className = 'rm-campaign-track';
+    campaignTrack.style.gridTemplateColumns = 'repeat(' + daysInMonth + ', 1fr)';
+
+    if (laneCampaigns.length === 0) {
+      campaignTrack.classList.add('empty');
+    } else {
+      const rowEnds = [];
+      const placed = laneCampaigns
+        .slice()
+        .sort((a, b) => a.start.localeCompare(b.start))
+        .map(c => {
+          const clipStart = c.start > monthStartStr ? c.start : monthStartStr;
+          const clipEnd = c.end < monthEndStr ? c.end : monthEndStr;
+          const startDay = Number(clipStart.slice(8, 10));
+          const endDay = Number(clipEnd.slice(8, 10));
+          let rowIdx = rowEnds.findIndex(endOccupied => endOccupied < startDay);
+          if (rowIdx === -1) { rowIdx = rowEnds.length; rowEnds.push(endDay); }
+          else { rowEnds[rowIdx] = endDay; }
+          return { c, startDay, endDay, rowIdx };
+        });
+
+      campaignTrack.style.gridTemplateRows = 'repeat(' + rowEnds.length + ', auto)';
+
+      placed.forEach(({ c, startDay, endDay, rowIdx }) => {
+        const bar = document.createElement('div');
+        bar.className = 'rm-campaign-bar status-' + campaignStatus(c);
+        bar.style.gridColumn = startDay + ' / ' + (endDay + 1);
+        bar.style.gridRow = rowIdx + 1;
+        bar.style.background = 'var(--' + serviceLevels[sl] + ')';
+        bar.style.borderLeftColor = categoryBorderVar(c.category);
+        bar.dataset.service = c.serviceLevel;
+        bar.title = c.title + ' (' + c.category + ')' + (c.schedule ? ' — ' + c.schedule : '');
+        bar.textContent = c.title;
+        bar.addEventListener('click', () => openCampaignModal(c));
+        campaignTrack.appendChild(bar);
+      });
+    }
+    body.appendChild(campaignTrack);
+
+    lane.appendChild(body);
+    rmLanes.appendChild(lane);
+  });
+
+  applyFilters();
+}
+
+function openModal(ev, d) {
+  const dow = new Date(current.year, current.month, d).toLocaleDateString('en-US', { weekday: 'long' });
+  modalContent.innerHTML =
+    '<span class="modal-tag chip type-' + ev.type + '">' + typeLabels[ev.type] + '</span>' +
+    '<span class="modal-tag" style="background:var(--' + serviceLevels[ev.serviceLevel] + ');color:white;">' + ev.serviceLevel + '</span>' +
+    '<h3>' + ev.title + '</h3>' +
+    '<div class="modal-row"><span>Date</span><span>' + dow + ', ' + monthNames[current.month] + ' ' + d + ', ' + current.year + '</span></div>' +
+    '<div class="modal-row"><span>Status</span><span>' + statusLabels[eventDateStatus(ev.date)] + '</span></div>' +
+    '<div class="modal-row"><span>Assigned to</span><span>' + ev.person + '</span></div>' +
+    (getTeamLead(ev.person) ? '<div class="modal-row"><span>Team lead</span><span>' + getTeamLead(ev.person) + '</span></div>' : '') +
+    (ev.designer ? '<div class="modal-row"><span>Designer</span><span>' + ev.designer + '</span></div>' : '') +
+    '<div class="modal-row"><span>Category</span><span>' + getCategory(ev) + '</span></div>' +
+    '<div class="modal-row"><span>Format</span><span>' + typeLabels[ev.type] + '</span></div>' +
+    '<div class="modal-row"><span>Service line</span><span>' + ev.serviceLevel + '</span></div>' +
+    '<p class="details">' + ev.details + '</p>' +
+    '<button class="close" id="closeBtn">Close</button>';
+  overlay.classList.add('open');
+  document.getElementById('closeBtn').addEventListener('click', closeModal);
+}
+
+function openDayCampaignsModal(dateStr, list) {
+  modalContent.innerHTML =
+    '<h3>Active campaigns — ' + formatFullDate(dateStr) + '</h3>' +
+    '<div id="dayCampList"></div>' +
+    '<button class="close" id="closeBtn" style="margin-top:14px;">Close</button>';
+  const listEl = document.getElementById('dayCampList');
+  list.forEach(c => {
+    const row = document.createElement('button');
+    row.className = 'modal-row';
+    row.style.cssText = 'width:100%;background:none;border:none;cursor:pointer;font-family:Inter,sans-serif;';
+    row.innerHTML =
+      '<span style="display:flex;align-items:center;gap:8px;">' +
+        '<span style="width:8px;height:8px;border-radius:2px;flex-shrink:0;background:var(--' + serviceLevels[c.serviceLevel] + ')"></span>' +
+        c.title +
+      '</span>' +
+      '<span style="color:var(--ink-faint);font-size:12px;">' + c.serviceLevel + '</span>';
+    row.addEventListener('click', () => openCampaignModal(c));
+    listEl.appendChild(row);
+  });
+  overlay.classList.add('open');
+  document.getElementById('closeBtn').addEventListener('click', closeModal);
+}
+
+function openCampaignModal(c) {
+  modalContent.innerHTML =
+    '<span class="modal-tag" style="' + categoryFillStyle(c.category) + 'color:white;">' + c.category + '</span>' +
+    '<span class="modal-tag" style="background:var(--' + serviceLevels[c.serviceLevel] + ');color:white;">' + c.serviceLevel + '</span>' +
+    '<h3>' + c.title + '</h3>' +
+    '<div class="modal-row"><span>Start</span><span>' + formatFullDate(c.start) + '</span></div>' +
+    '<div class="modal-row"><span>End</span><span>' + formatFullDate(c.end) + '</span></div>' +
+    '<div class="modal-row"><span>Status</span><span>' + statusLabels[campaignStatus(c)] + '</span></div>' +
+    '<div class="modal-row"><span>Category</span><span>' + c.category + '</span></div>' +
+    '<div class="modal-row"><span>Service line</span><span>' + c.serviceLevel + '</span></div>' +
+    (c.schedule ? '<div class="modal-row"><span>Daily schedule</span><span>' + c.schedule + '</span></div>' : '') +
+    (c.designer ? '<div class="modal-row"><span>Designer</span><span>' + c.designer + '</span></div>' : '') +
+    '<p class="details">' + c.details + '</p>' +
+    '<button class="close" id="closeBtn">Close</button>';
+  overlay.classList.add('open');
+  document.getElementById('closeBtn').addEventListener('click', closeModal);
+}
+
+function closeModal() { overlay.classList.remove('open'); }
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+
+function applyFilters() {
+  const p = personFilter.value;
+  const t = typeFilter.value;
+  const sl = serviceFilter.value;
+
+  function matchesPerson(personVal) {
+    return p === 'all' || personVal === p || getTeamLead(personVal) === p;
+  }
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    const matchP = matchesPerson(chip.dataset.person);
+    const matchT = t === 'all' || chip.dataset.type === t;
+    const matchS = sl === 'all' || chip.dataset.service === sl;
+    chip.classList.toggle('hidden', !(matchP && matchT && matchS));
+  });
+
+  document.querySelectorAll('.rm-block').forEach(block => {
+    const matchP = matchesPerson(block.dataset.person);
+    const matchT = t === 'all' || block.dataset.type === t;
+    const matchS = sl === 'all' || block.dataset.service === sl;
+    block.classList.toggle('hidden', !(matchP && matchT && matchS));
+  });
+
+  // Campaigns have no person/format, so a person or format filter hides them —
+  // only the service line filter applies.
+  const campaignMatch = (p === 'all') && (t === 'all');
+  document.querySelectorAll('.campaign-pill').forEach(pill => {
+    const matchS = sl === 'all' || pill.dataset.service === sl;
+    pill.classList.toggle('hidden', !(campaignMatch && matchS));
+  });
+  document.querySelectorAll('.rm-campaign-bar').forEach(bar => {
+    const matchS = sl === 'all' || bar.dataset.service === sl;
+    bar.classList.toggle('hidden', !(campaignMatch && matchS));
+  });
+  document.querySelectorAll('.day-campaign-seg').forEach(seg => {
+    const matchS = sl === 'all' || seg.dataset.service === sl;
+    seg.classList.toggle('hidden', !(campaignMatch && matchS));
+  });
+  document.querySelectorAll('.day-campaign-more').forEach(more => {
+    more.classList.toggle('hidden', !campaignMatch);
+  });
+}
+
+function updateStats() {
+  const monthPrefix = current.year + '-' + String(current.month + 1).padStart(2, '0') + '-';
+  const monthEvents = events.filter(e => e.date.startsWith(monthPrefix));
+  document.getElementById('statTotal').textContent = monthEvents.length;
+  document.getElementById('statUnassigned').textContent = monthEvents.filter(e => e.person === 'Unassigned').length;
+}
+
+function refresh() {
+  if (activeView === 'calendar') {
+    buildCalendar();
+  } else if (activeView === 'roadmap') {
+    buildRoadmap();
+    updateStats();
+  }
+}
+
+document.getElementById('prevMonth').addEventListener('click', () => {
+  current.month -= 1;
+  if (current.month < 0) { current.month = 11; current.year -= 1; }
+  refresh();
+  monthLabel.textContent = monthNames[current.month] + ' ' + current.year;
+});
+
+document.getElementById('nextMonth').addEventListener('click', () => {
+  current.month += 1;
+  if (current.month > 11) { current.month = 0; current.year += 1; }
+  refresh();
+  monthLabel.textContent = monthNames[current.month] + ' ' + current.year;
+});
+
+const monthNav = document.querySelector('.month-nav');
+const controlsBar = document.querySelector('.controls');
+const planningView = document.getElementById('planningView');
+const reactivatedView = document.getElementById('reactivatedView');
+const campaignBannerEl = document.getElementById('campaignBanner');
+
+function setActiveButton(id) {
+  ['btnCalendarView', 'btnRoadmapView', 'btnPlanningView', 'btnReactivatedView'].forEach(btnId => {
+    document.getElementById(btnId).classList.toggle('active', btnId === id);
+  });
+}
+
+function buildPlanningView() {
+  const listEl = document.getElementById('planningList');
+  listEl.innerHTML = '';
+  planningItems.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'planning-card';
+    card.innerHTML = '<span class="name">' + name + '</span><span class="planning-badge">No confirmed plan yet</span>';
+    listEl.appendChild(card);
+  });
+}
+
+// --- Reactive Campaigns (Google Sheet–backed) ---
+// Entries are stored in a shared Google Sheet via Apps Script web app.
+// localStorage is kept as a fast cache / offline fallback.
+const RA_SHEET_URL = 'https://script.google.com/macros/s/AKfycbziqbdpM4URASmFJgZVtcfIpJz1zI-SufqXK4w3SniRM2ve_UBKPl6WSuVV2dzZwa5b/exec';
+const RA_STORAGE_KEY = 'petraride_reactivated_campaigns_v1';
+
+function loadLocalCache() {
+  try {
+    const raw = localStorage.getItem(RA_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveLocalCache(list) {
+  try {
+    localStorage.setItem(RA_STORAGE_KEY, JSON.stringify(list));
+  } catch (err) {}
+}
+
+let reactivatedCampaigns = loadLocalCache();
+
+async function fetchFromSheet() {
+  try {
+    const res = await fetch(RA_SHEET_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    // Normalize field names (sheet returns serviceLevel, local uses service)
+    reactivatedCampaigns = data.map(item => ({
+      title: item.title || '',
+      date: item.date ? String(item.date).slice(0, 10) : '',
+      requester: item.requester || '',
+      requesterEmail: item.requesterEmail || '',
+      assignTo: item.assignTo || '',
+      category: item.category || '',
+      service: item.serviceLevel || item.service || '',
+      brief: item.brief || ''
+    }));
+    saveLocalCache(reactivatedCampaigns);
+    buildReactivatedView();
+  } catch (err) {
+    // Offline or error — use local cache, already loaded
+    console.warn('Could not fetch from Google Sheet, using local cache:', err.message);
+  }
+}
+
+function buildReactivatedView() {
+  const listEl = document.getElementById('reactivatedList');
+  listEl.innerHTML = '';
+
+  if (reactivatedCampaigns.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'ra-empty';
+    empty.textContent = 'No requests yet — use the form above to submit the first reactive campaign request.';
+    listEl.appendChild(empty);
+    return;
+  }
+
+  reactivatedCampaigns.slice().reverse().forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'ra-card';
+    const sub = [
+      item.date ? formatFullDate(item.date) : null,
+      item.requester ? 'Requester: ' + item.requester : null,
+      item.assignTo ? 'Assigned to: ' + item.assignTo : null
+    ].filter(Boolean).join(' \u00b7 ');
+    const serviceTags = (item.service || '').split(', ').filter(Boolean).map(s => '<span class="ra-tag">' + s + '</span>').join('');
+    card.innerHTML =
+      '<span class="ra-main"><span class="ra-title">' + item.title + '</span>' +
+      (sub ? '<span class="ra-sub">' + sub + '</span>' : '') +
+      (item.brief ? '<span class="ra-brief-text">' + item.brief.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>' : '') +
+      '</span>' +
+      '<span class="ra-tags">' +
+        '<span class="ra-tag">' + item.category + '</span>' +
+        serviceTags +
+      '</span>';
+    listEl.appendChild(card);
+  });
+}
+
+function getSelectedServices() {
+  return Array.from(document.querySelectorAll('#raServiceGroup input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+}
+
+document.getElementById('raForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const title = document.getElementById('raTitle').value.trim();
+  if (!title) return;
+  const services = getSelectedServices();
+  const entry = {
+    title,
+    date: document.getElementById('raDate').value,
+    requester: document.getElementById('raRequester').value.trim(),
+    requesterEmail: document.getElementById('raRequesterEmail').value.trim(),
+    assignTo: document.getElementById('raAssignTo').value,
+    category: document.getElementById('raCategory').value,
+    service: services.join(', '),
+    brief: document.getElementById('raBrief').value.trim()
+  };
+
+  // Optimistic local update
+  reactivatedCampaigns.push(entry);
+  saveLocalCache(reactivatedCampaigns);
+  e.target.reset();
+  buildReactivatedView();
+
+  // Push to Google Sheet (also triggers email notifications via Apps Script)
+  try {
+    await fetch(RA_SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        title: entry.title,
+        date: entry.date,
+        requester: entry.requester,
+        requesterEmail: entry.requesterEmail,
+        assignTo: entry.assignTo,
+        category: entry.category,
+        serviceLevel: entry.service,
+        brief: entry.brief
+      })
+    });
+  } catch (err) {
+    console.warn('Could not save to Google Sheet:', err.message);
+  }
+});
+
+// Load from sheet on page open
+fetchFromSheet();
+
+document.getElementById('btnCalendarView').addEventListener('click', () => {
+  activeView = 'calendar';
+  setActiveButton('btnCalendarView');
+  calendarGrid.style.display = '';
+  roadmapView.classList.remove('active');
+  planningView.classList.remove('active');
+  reactivatedView.classList.remove('active');
+  campaignBannerEl.style.display = '';
+  monthNav.style.display = '';
+  controlsBar.style.display = '';
+  refresh();
+});
+
+document.getElementById('btnRoadmapView').addEventListener('click', () => {
+  activeView = 'roadmap';
+  setActiveButton('btnRoadmapView');
+  calendarGrid.style.display = 'none';
+  roadmapView.classList.add('active');
+  planningView.classList.remove('active');
+  reactivatedView.classList.remove('active');
+  campaignBannerEl.style.display = '';
+  monthNav.style.display = '';
+  controlsBar.style.display = '';
+  refresh();
+});
+
+document.getElementById('btnPlanningView').addEventListener('click', () => {
+  activeView = 'planning';
+  setActiveButton('btnPlanningView');
+  calendarGrid.style.display = 'none';
+  roadmapView.classList.remove('active');
+  planningView.classList.add('active');
+  reactivatedView.classList.remove('active');
+  campaignBannerEl.style.display = 'none';
+  monthNav.style.display = 'none';
+  controlsBar.style.display = 'none';
+  buildPlanningView();
+});
+
+document.getElementById('btnReactivatedView').addEventListener('click', () => {
+  activeView = 'reactivated';
+  setActiveButton('btnReactivatedView');
+  calendarGrid.style.display = 'none';
+  roadmapView.classList.remove('active');
+  planningView.classList.remove('active');
+  reactivatedView.classList.add('active');
+  campaignBannerEl.style.display = 'none';
+  monthNav.style.display = 'none';
+  controlsBar.style.display = 'none';
+  buildReactivatedView();
+});
+
+personFilter.addEventListener('change', applyFilters);
+typeFilter.addEventListener('change', applyFilters);
+serviceFilter.addEventListener('change', applyFilters);
+
+buildLegend();
+buildFilters();
+buildCalendar();
+</script>
+</body>
+</html>
