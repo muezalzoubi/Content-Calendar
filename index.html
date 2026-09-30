@@ -1393,6 +1393,7 @@ function openModal(ev, d) {
 }
 
 function openDayCampaignsModal(dateStr, list) {
+  _lastDayCampaigns = { dateStr, list };
   modalContent.innerHTML =
     '<h3>Active campaigns — ' + formatFullDate(dateStr) + '</h3>' +
     '<div id="dayCampList"></div>' +
@@ -1408,15 +1409,21 @@ function openDayCampaignsModal(dateStr, list) {
         c.title +
       '</span>' +
       '<span style="color:var(--ink-faint);font-size:12px;">' + c.serviceLevel + '</span>';
-    row.addEventListener('click', () => openCampaignModal(c));
+    row.addEventListener('click', () => openCampaignModal(c, true));
     listEl.appendChild(row);
   });
   overlay.classList.add('open');
   document.getElementById('closeBtn').addEventListener('click', closeModal);
 }
 
-function openCampaignModal(c) {
+let _lastDayCampaigns = null;
+
+function openCampaignModal(c, fromDayList) {
+  const backBtn = fromDayList
+    ? '<button id="backBtn" style="background:none;border:none;cursor:pointer;font-family:Inter,sans-serif;font-size:13px;color:var(--accent);display:inline-flex;align-items:center;gap:4px;padding:0 0 10px;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:middle;"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to campaigns</button>'
+    : '';
   modalContent.innerHTML =
+    backBtn +
     '<span class="modal-tag" style="' + categoryFillStyle(c.category) + 'color:white;">' + c.category + '</span>' +
     '<span class="modal-tag" style="background:var(--' + serviceLevels[c.serviceLevel] + ');color:white;">' + c.serviceLevel + '</span>' +
     '<h3>' + c.title + '</h3>' +
@@ -1431,6 +1438,11 @@ function openCampaignModal(c) {
     '<button class="close" id="closeBtn">Close</button>';
   overlay.classList.add('open');
   document.getElementById('closeBtn').addEventListener('click', closeModal);
+  if (fromDayList && _lastDayCampaigns) {
+    document.getElementById('backBtn').addEventListener('click', () => {
+      openDayCampaignsModal(_lastDayCampaigns.dateStr, _lastDayCampaigns.list);
+    });
+  }
 }
 
 function closeModal() { overlay.classList.remove('open'); }
