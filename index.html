@@ -27,12 +27,13 @@
     --competition-bg: #fdece8; --competition-text: #a32d2d; --competition-dot: #e4572e;
     --offline-bg: #eef4e2; --offline-text: #3b6d11; --offline-dot: #639922;
     --growth-bg: #eceffd; --growth-text: #2d3a99; --growth-dot: #4c5fd6;
+    --design-bg: #fce4ec; --design-text: #880e4f; --design-dot: #e91e63;
     --bd-bg: #f7f0e6; --bd-text: #7a5230; --bd-dot: #b98a52;
 
     --sl-ridehailing: #2f6fed;
     --sl-box: #d97706;
     --sl-liveride: #0f9d58;
-    --sl-vip: #8b5cf6;
+    --sl-premium: #8b5cf6;
 
     --cat-online: #1d9e75;
     --cat-offline: #639922;
@@ -162,6 +163,33 @@
     min-width: 190px;
   }
 
+
+  .team-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .team-toggle button {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .team-toggle button.active {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+  }
+  .team-toggle button:hover:not(.active) {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
   .controls {
     display: flex;
     flex-wrap: wrap;
@@ -717,6 +745,13 @@
     <button id="nextMonth" aria-label="Next month">›</button>
   </div>
 
+  <div class="team-toggle" id="teamToggle">
+    <button class="active" data-team="all">All</button>
+    <button data-team="online">Online</button>
+    <button data-team="offline">Offline</button>
+    <button data-team="design">Design</button>
+  </div>
+
   <div class="controls">
     <label for="personFilter">Person</label>
     <select id="personFilter"></select>
@@ -789,7 +824,7 @@
         <label class="ra-check"><input type="checkbox" value="Ride Hailing"> Ride Hailing</label>
         <label class="ra-check"><input type="checkbox" value="Box"> Box</label>
         <label class="ra-check"><input type="checkbox" value="Live Ride"> Live Ride</label>
-        <label class="ra-check"><input type="checkbox" value="VIP"> VIP</label>
+        <label class="ra-check"><input type="checkbox" value="Premium"> Premium</label>
       </div>
       <textarea class="ra-brief" id="raBrief" placeholder="1. Discount % (if applicable)&#10;2. Expected duration / date&#10;3. Channel: SMS, Push notifications, Social media, or SEM&#10;4. Type of post" rows="5"></textarea>
       <button type="submit">+ Submit request</button>
@@ -797,7 +832,7 @@
     <div id="reactivatedList"></div>
   </div>
 
-  <footer class="note">Format = content type (Reel, Story, Offline event, etc). Service line = product (Ride Hailing, Box, Live Ride, VIP). Roadmap groups activities by service line across the month.</footer>
+  <footer class="note">Format = content type (Reel, Story, Offline event, etc). Service line = product (Ride Hailing, Box, Live Ride, Premium). Roadmap groups activities by service line across the month.</footer>
 </div>
 
 <div class="overlay" id="overlay">
@@ -853,11 +888,11 @@ const events = [
   {date:"2026-09-27", title:"Sun Villa prize reel", person:"Rana", designer:"Mays", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign Villa prize reel. Designed by Mays."},
   {date:"2026-09-29", title:"SUN Villa prize Post", person:"Rana", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"SUN campaign Villa prize post. Designed by Bayan."},
   {date:"2026-09-30", title:"Box reel", person:"Jessica", type:"reel", channel:"Online", serviceLevel:"Box", details:"Box service reel content."},
-  {date:"2026-09-21", title:"VIP Van Carousel post", person:"Rana", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"VIP", details:"VIP Van carousel post for LinkedIn & Meta. Designed by Bayan."},
-  {date:"2026-09-23", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
-  {date:"2026-09-25", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
-  {date:"2026-09-27", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
-  {date:"2026-09-29", title:"VIP Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"VIP", details:"VIP Van story content. Designed by Bayan."},
+  {date:"2026-09-21", title:"Premium Van Carousel post", person:"Rana", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Premium", details:"Premium Van carousel post for LinkedIn & Meta. Designed by Bayan."},
+  {date:"2026-09-23", title:"Premium Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Premium", details:"Premium Van story content. Designed by Bayan."},
+  {date:"2026-09-25", title:"Premium Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Premium", details:"Premium Van story content. Designed by Bayan."},
+  {date:"2026-09-27", title:"Premium Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Premium", details:"Premium Van story content. Designed by Bayan."},
+  {date:"2026-09-29", title:"Premium Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Premium", details:"Premium Van story content. Designed by Bayan."},
   {date:"2026-09-02", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
   {date:"2026-09-02", title:"Daragmeh activation", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline brand activation at Daragmeh."},
   {date:"2026-09-03", title:"Mecca Mall activation", person:"Raneem", designer:"Bayan", type:"offline", channel:"Offline", serviceLevel:"Live Ride", details:"Offline brand activation at Mecca Mall."},
@@ -924,7 +959,48 @@ const events = [
   {date:"2026-10-05", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
   {date:"2026-10-06", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
   {date:"2026-10-07", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
-  {date:"2026-10-08", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."}
+  {date:"2026-10-08", title:"Flash Promo (7–10 AM · 2–6 PM · 7–10 PM)", person:"Rana", designer:"Bayan", type:"growth", channel:"Growth", serviceLevel:"Ride Hailing", details:"Flash Promo daily windows: Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM). Growth campaign; content owned by Rana on the online team, designed by Bayan."},
+
+  // ── Design team tasks (Sep–Oct) ──
+  {date:"2026-09-17", title:"SUN winners reel", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: SUN winners reel. Requester: Rana, Designer: Mays."},
+  {date:"2026-09-18", title:"A5 Vouchers brochure", person:"Raneem", designer:"Mays", type:"design", channel:"Offline", serviceLevel:"Ride Hailing", details:"Design task: A5 brochure with each service line from PetraRide explained briefly. Requester: Raneem, Designer: Mays."},
+  {date:"2026-09-20", title:"Live Ride Carousel Post", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Live Ride", details:"Design task: Live Ride carousel post. Requester: Rana, Designer: Mays."},
+  {date:"2026-09-20", title:"SUN Alora Villa post", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: SUN Alora Villa post. Requester: Rana, Designer: Mays."},
+  {date:"2026-09-20", title:"JoFintech welcome sign", person:"Raneem", designer:"Mays", type:"design", channel:"Offline", serviceLevel:"Ride Hailing", details:"Design task: JoFintech welcome sign. Requester: Raneem, Designer: Mays."},
+  {date:"2026-09-27", title:"Apple Store & Google Play", person:"Jessica", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Box", details:"Design task: Apple Store & Google Play assets. Requester: Jessica, Designer: Mays."},
+  {date:"2026-09-27", title:"Motion Teaser — UNI Post", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Back to UNI motion teaser post. Requester: Rana, Designer: Mays."},
+  {date:"2026-09-28", title:"UNI Carousel prizes post", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Back to UNI carousel prizes post. Requester: Rana, Designer: Mays."},
+  {date:"2026-09-27", title:"Pink Post", person:"Rana", designer:"Bayan", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Pink October post. Requester: Rana, Designer: Bayan."},
+  {date:"2026-09-27", title:"Pink Post #2", person:"Rana", designer:"Bayan", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Pink October post #2. Requester: Rana, Designer: Bayan."},
+  {date:"2026-09-29", title:"Pink Carousel Prizes", person:"Rana", designer:"Bayan", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Pink October carousel prizes. Requester: Rana, Designer: Bayan."},
+  {date:"2026-09-27", title:"Pink Oct Outro", person:"Jessica", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: Pink October outro. Requester: Jessica, Designer: Mays."},
+  {date:"2026-09-27", title:"08 code vouchers", person:"Obada", designer:"Mays", type:"design", channel:"Offline", serviceLevel:"Ride Hailing", details:"Design task: 08 code vouchers. Requester: Obada, Designer: Mays."},
+  {date:"2026-09-29", title:"JoFintech reel", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: JoFintech reel. Requester: Rana, Designer: Mays."},
+
+  // ── New offline events ──
+  {date:"2026-09-29", title:"KHCF", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline event at KHCF."},
+  {date:"2026-10-05", title:"IEEE — UTU", person:"Raneem x Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at IEEE — UTU event."},
+
+  // ── October online events (from SM Calendar) ──
+  {date:"2026-10-01", title:"KANZ Motion", person:"Rana", designer:"Mays", type:"video", channel:"Online", serviceLevel:"Live Ride", details:"KANZ motion post for Live Ride."},
+  {date:"2026-10-01", title:"Pink October Carousel", person:"Rana", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Ride Hailing", details:"Pink October carousel post."},
+  {date:"2026-10-01", title:"Live Ride story", person:"Jessica", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride story content."},
+  {date:"2026-10-02", title:"Ride Hailing reel", person:"Rana", type:"reel", channel:"Online", serviceLevel:"Ride Hailing", details:"Ride Hailing reel content."},
+  {date:"2026-10-02", title:"Box story", person:"Jessica", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Box", details:"Box service story content."},
+  {date:"2026-10-03", title:"Pink October Carousel", person:"Rana", designer:"Bayan", type:"carousel", channel:"Online", serviceLevel:"Ride Hailing", details:"Pink October carousel post."},
+  {date:"2026-10-03", title:"Premium Van story", person:"Rana", designer:"Bayan", type:"story", channel:"Online", serviceLevel:"Premium", details:"Premium Van story content."},
+  {date:"2026-10-04", title:"Ride Hailing video", person:"Rana", designer:"Mays", type:"video", channel:"Online", serviceLevel:"Ride Hailing", details:"Ride Hailing video content."},
+  {date:"2026-10-04", title:"Live Ride post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride post content."},
+  {date:"2026-10-05", title:"Box post", person:"Jessica", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Box", details:"Box service post content."},
+  {date:"2026-10-05", title:"Premium Van post", person:"Rana", designer:"Bayan", type:"post", channel:"Online", serviceLevel:"Premium", details:"Premium Van post content."},
+  {date:"2026-10-06", title:"Ride Hailing content", person:"Rana", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Ride Hailing content — details to be assigned."},
+  {date:"2026-10-06", title:"Premium content", person:"Rana", type:"post", channel:"Online", serviceLevel:"Premium", details:"Premium content — details to be assigned."},
+  {date:"2026-10-06", title:"Live Ride content", person:"Jessica", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride content — details to be assigned."},
+  {date:"2026-10-06", title:"Box content", person:"Jessica", type:"post", channel:"Online", serviceLevel:"Box", details:"Box content — details to be assigned."},
+  {date:"2026-10-07", title:"Ride Hailing content", person:"Rana", type:"post", channel:"Online", serviceLevel:"Ride Hailing", details:"Ride Hailing content — details to be assigned."},
+  {date:"2026-10-07", title:"Premium content", person:"Rana", type:"post", channel:"Online", serviceLevel:"Premium", details:"Premium content — details to be assigned."},
+  {date:"2026-10-07", title:"Live Ride content", person:"Jessica", type:"post", channel:"Online", serviceLevel:"Live Ride", details:"Live Ride content — details to be assigned."},
+  {date:"2026-10-07", title:"Box content", person:"Jessica", type:"post", channel:"Online", serviceLevel:"Box", details:"Box content — details to be assigned."},
 ];
 
 const campaigns = [
@@ -935,7 +1011,7 @@ const campaigns = [
   {title:"Flash Promo", category:"Growth", serviceLevel:"Ride Hailing", start:"2026-09-08", end:"2026-10-08", schedule:"Morning (7–10 AM), Afternoon (2–6 PM), Evening (7–10 PM)", designer:"Bayan", details:"Growth-focused flash promotion, running three windows a day. Includes a story series (specific dates not yet set — let me know when those are confirmed so I can add them as individual dated posts). Service line assumed Ride Hailing — confirm if this should be tagged differently."},
   {title:"Apple Pay Campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2026-07-07", end:"2026-12-31", details:"Ongoing online campaign promoting Apple Pay payments."},
   {title:"P15 campaign", category:"Online", serviceLevel:"Ride Hailing", start:"2025-12-07", end:"2026-12-31", designer:"Mays", details:"Long-running online P15 campaign. Includes P15 campaign video, designed by Mays."},
-  {title:"Breast Cancer Awareness", category:"Online & Offline", serviceLevel:"Ride Hailing", start:"2026-10-01", end:"2026-10-31", details:"Awareness campaign running across both online and offline channels."},
+  {title:"Pink October", category:"Online & Offline", serviceLevel:"Ride Hailing", start:"2026-10-01", end:"2026-10-31", details:"Pink October awareness campaign running across both online and offline channels."},
   {title:"School Promo", category:"Online", serviceLevel:"Live Ride", start:"2026-08-25", end:"2027-01-15", designer:"Bayan", details:"Back to School Campaign, part 1 — online promo tied to the Live Ride service."},
   {title:"School1 Promo", category:"Online", serviceLevel:"Live Ride", start:"2026-08-26", end:"2027-01-15", designer:"Bayan", details:"Back to School Campaign, part 2 — online promo tied to the Live Ride service."}
 ];
@@ -960,14 +1036,15 @@ const typeLabels = {
   competition: "Competition",
   offline: "Offline event",
   growth: "Growth campaign",
-  bd: "BD event"
+  bd: "BD event",
+  design: "Design task"
 };
 
 const serviceLevels = {
   "Ride Hailing": "sl-ridehailing",
   "Box": "sl-box",
   "Live Ride": "sl-liveride",
-  "VIP": "sl-vip"
+  "Premium": "sl-premium"
 };
 
 const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -1005,6 +1082,7 @@ function campaignStatus(c) {
 
 let current = { year: 2026, month: 8 };
 let activeView = "calendar";
+let activeTeam = "all";
 
 const daysEl = document.getElementById('days');
 const personFilter = document.getElementById('personFilter');
@@ -1358,27 +1436,43 @@ function openCampaignModal(c) {
 function closeModal() { overlay.classList.remove('open'); }
 overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
 
+function getTeamCategory(ev) {
+  if (ev.type === 'design') return 'design';
+  if (ev.channel === 'Offline') return 'offline';
+  return 'online';
+}
+
 function applyFilters() {
   const p = personFilter.value;
   const t = typeFilter.value;
   const sl = serviceFilter.value;
+  const team = activeTeam;
 
   function matchesPerson(personVal) {
     return p === 'all' || personVal === p || getTeamLead(personVal) === p;
+  }
+
+  function matchesTeam(chipEl) {
+    if (team === 'all') return true;
+    const ct = chipEl.dataset.team || 'online';
+    if (team === 'online') return ct === 'online' || ct === 'growth';
+    return ct === team;
   }
 
   document.querySelectorAll('.chip').forEach(chip => {
     const matchP = matchesPerson(chip.dataset.person);
     const matchT = t === 'all' || chip.dataset.type === t;
     const matchS = sl === 'all' || chip.dataset.service === sl;
-    chip.classList.toggle('hidden', !(matchP && matchT && matchS));
+    const matchTeam = matchesTeam(chip);
+    chip.classList.toggle('hidden', !(matchP && matchT && matchS && matchTeam));
   });
 
   document.querySelectorAll('.rm-block').forEach(block => {
     const matchP = matchesPerson(block.dataset.person);
     const matchT = t === 'all' || block.dataset.type === t;
     const matchS = sl === 'all' || block.dataset.service === sl;
-    block.classList.toggle('hidden', !(matchP && matchT && matchS));
+    const matchTeam = (team === 'all') || (block.dataset.team || 'online') === team || (team === 'online' && (block.dataset.team || 'online') === 'growth');
+    block.classList.toggle('hidden', !(matchP && matchT && matchS && matchTeam));
   });
 
   // Campaigns have no person/format, so a person or format filter hides them —
@@ -1637,6 +1731,14 @@ document.getElementById('btnReactivatedView').addEventListener('click', () => {
   monthNav.style.display = 'none';
   controlsBar.style.display = 'none';
   buildReactivatedView();
+});
+
+document.getElementById('teamToggle').addEventListener('click', (e) => {
+  if (e.target.tagName !== 'BUTTON') return;
+  activeTeam = e.target.dataset.team;
+  document.querySelectorAll('#teamToggle button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  applyFilters();
 });
 
 personFilter.addEventListener('change', applyFilters);
