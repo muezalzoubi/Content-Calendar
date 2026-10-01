@@ -1066,11 +1066,19 @@ const teamLeads = {
   "Raneem": "Muez",
   "Obada": "Muez",
   "Jessica": "Nour",
-  "Rana": "Nour"
+  "Rana": "Nour",
+  "Mays": "Asal",
+  "Bayan": "Asal"
 };
+
+const reportingTo = { "Mays": true, "Bayan": true };
 
 function getTeamLead(person) {
   return teamLeads[person] || null;
+}
+
+function getSupervisorLabel(person) {
+  return reportingTo[person] ? 'Reporting to' : 'Team lead';
 }
 
 function campaignStatus(c) {
@@ -1079,7 +1087,7 @@ function campaignStatus(c) {
   return 'active';
 }
 
-let current = { year: 2026, month: 8 };
+let current = { year: 2026, month: 9 };
 let activeView = "calendar";
 let activeTeam = "all";
 
@@ -1380,7 +1388,7 @@ function openModal(ev, d) {
     '<div class="modal-row"><span>Date</span><span>' + dow + ', ' + monthNames[current.month] + ' ' + d + ', ' + current.year + '</span></div>' +
     '<div class="modal-row"><span>Status</span><span>' + statusLabels[eventDateStatus(ev.date)] + '</span></div>' +
     '<div class="modal-row"><span>Assigned to</span><span>' + ev.person + '</span></div>' +
-    (getTeamLead(ev.person) ? '<div class="modal-row"><span>Team lead</span><span>' + getTeamLead(ev.person) + '</span></div>' : '') +
+    (getTeamLead(ev.person) ? '<div class="modal-row"><span>' + getSupervisorLabel(ev.person) + '</span><span>' + getTeamLead(ev.person) + '</span></div>' : '') +
     (ev.designer ? '<div class="modal-row"><span>Designer</span><span>' + ev.designer + '</span></div>' : '') +
     '<div class="modal-row"><span>Category</span><span>' + getCategory(ev) + '</span></div>' +
     '<div class="modal-row"><span>Format</span><span>' + typeLabels[ev.type] + '</span></div>' +
