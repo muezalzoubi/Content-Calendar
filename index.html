@@ -979,9 +979,16 @@ const events = [
   {date:"2026-10-01", title:"P15 Video Ad", person:"Nour", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: P15 video ad. Requester: Nour, Designer: Mays."},
   {date:"2026-10-04", title:"5B Vouchers", person:"Obada", designer:"Mays", type:"design", channel:"Offline", serviceLevel:"Ride Hailing", details:"Design task: 5B Vouchers. Requester: Obada, Designer: Mays."},
   {date:"2026-10-04", title:"IEEE Website Video", person:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: IEEE Website video. Assigned to: Mays, Overseen by: Muez."},
-
+  {date:"2026-10-07", title:"5B Mall Story", person:"Rana", designer:"Mays", type:"design", channel:"Online", serviceLevel:"Ride Hailing", details:"Design task: 5B Mall story. Requester: Obada & Rana, Designer: Mays."},
 
   // ── New offline events ──
+  {date:"2026-10-05", title:"Aqaba Eye Activation", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at Aqaba Eye."},
+  {date:"2026-10-08", title:"5B Mall Activation", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at 5B Mall (Oct 8–10)."},
+  {date:"2026-10-09", title:"5B Mall Activation", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at 5B Mall (Oct 8–10)."},
+  {date:"2026-10-10", title:"5B Mall Activation", person:"Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at 5B Mall (Oct 8–10)."},
+  {date:"2026-10-11", title:"Ibn Sina University Activation", person:"Obada x Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at Ibn Sina University. Part of Back to UNI (BTU) campaign."},
+  {date:"2026-10-13", title:"JUST University Activation", person:"Obada x Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at JUST University. Part of Back to UNI (BTU) campaign."},
+  {date:"2026-10-18", title:"GJU Orientation Day", person:"Obada x Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at GJU Orientation Day. Part of Back to UNI (BTU) campaign."},
   {date:"2026-09-29", title:"KHCF", person:"Raneem", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline event at KHCF."},
   {date:"2026-10-05", title:"IEEE — UTU", person:"Raneem x Obada", type:"offline", channel:"Offline", serviceLevel:"Ride Hailing", details:"Offline activation at IEEE — UTU event."},
 
@@ -1263,6 +1270,7 @@ function buildCalendar() {
       chip.dataset.person = ev.person;
       chip.dataset.type = ev.type;
       chip.dataset.service = ev.serviceLevel;
+      chip.dataset.team = getTeamCategory(ev);
       chip.innerHTML = '<span class="title">' + ev.title + '</span><span class="meta">' + ev.person + ' · ' + typeLabels[ev.type] + '</span><span class="sl-dot" style="background:var(--' + serviceLevels[ev.serviceLevel] + ')"></span>';
       chip.addEventListener('click', () => openModal(ev, d));
       cell.appendChild(chip);
@@ -1323,6 +1331,7 @@ function buildRoadmap() {
         block.dataset.person = ev.person;
         block.dataset.type = ev.type;
         block.dataset.service = ev.serviceLevel;
+        block.dataset.team = getTeamCategory(ev);
         block.title = ev.title + ' — ' + cat;
         block.textContent = ev.title;
         block.addEventListener('click', () => openModal(ev, d));
@@ -1458,8 +1467,16 @@ function closeModal() { overlay.classList.remove('open'); }
 overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
 
 function getTeamCategory(ev) {
+  // Design: explicitly typed as design, or involves a designer (Mays/Bayan)
   if (ev.type === 'design') return 'design';
+  if (ev.designer && (ev.designer === 'Mays' || ev.designer === 'Bayan')) return 'design';
+  if (ev.person === 'Mays' || ev.person === 'Bayan') return 'design';
+  // Offline: Muez, Obada, Raneem or channel is Offline
+  const offlinePeople = ['Muez', 'Obada', 'Raneem'];
+  const personNames = ev.person ? ev.person.split(/\s*x\s*/) : [];
   if (ev.channel === 'Offline') return 'offline';
+  if (personNames.some(n => offlinePeople.includes(n.trim()))) return 'offline';
+  // Online: Rana, Nour, Jessica or default
   return 'online';
 }
 
